@@ -1,0 +1,15 @@
+# IDE Files
+.idea/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Build files
+build/
+out/
+
+# Gradle files
+.gradle/
