@@ -36,9 +36,9 @@ As you can see, looking at the project structure, you already have a part of the
 You may encounter problems if Java JDK is not set to version 11 in the Project Structure, or if you do not have Gradle installed.
 By default the application presents a text user interface.
 
- ![Picture showing how to run the application](https://github.com/Vali5681/assignment3/blob/master/ToClick.png)
+ ![Picture showing how to run the application](ToClick.png)
 
-3. Start creating your GUI
+3. Start creating your GUI (your code resides in src/main/java/java2.saxion)
 
 ## Good Luck!
 
