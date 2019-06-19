@@ -1,6 +1,6 @@
 package java2.saxion;
 
-public class Sudoku implements SudokuGame{
+public class Sudoku implements SudokuGame {
 
     private int[][] matrix;
     private int numberOfLines;
@@ -14,7 +14,7 @@ public class Sudoku implements SudokuGame{
         this.matrix = matrix;
     }
 
-    public void createPuzzle(int digitsToTakeOff){
+    public void createPuzzle(int digitsToTakeOff) {
         var generator = new Generator(this.numberOfLines, digitsToTakeOff);
         generator.fillValues();
         this.matrix = generator.getMatrix();
@@ -25,7 +25,7 @@ public class Sudoku implements SudokuGame{
     }
 
     public boolean isValueSuitableToPutThere(int i, int j, int value) {
-        if (value < 1  || value > 9) {
+        if (value < 1 || value > 9) {
             return false;
         }
 
@@ -95,6 +95,7 @@ public class Sudoku implements SudokuGame{
 
         return false; // Backtracking
     }
+
     public boolean checkIfFinished() {
         boolean done = true;
         for (var i = 0; i < 9; i++) {
@@ -105,17 +106,16 @@ public class Sudoku implements SudokuGame{
         }
         return done;
     }
-    public void setValue(int i, int j, int value)
-    {
+
+    public void setValue(int i, int j, int value) {
         matrix[i][j] = value;
     }
 
-    public int getValue(int i, int j){
+    public int getValue(int i, int j) {
         return matrix[i][j];
     }
 
-    public int getLinesNumber()
-    {
+    public int getLinesNumber() {
         return numberOfLines;
     }
 
