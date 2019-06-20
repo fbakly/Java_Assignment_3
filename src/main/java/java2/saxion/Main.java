@@ -17,9 +17,6 @@ public class Main extends Application {
         Parent root = loader.load();
 
         var controller = (Controller)loader.getController();
-        var sudoku = new Sudoku(9, 10 );
-
-        // TODO: bind the model to the controller here
 
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(new Scene(root, 640, 360));
@@ -29,10 +26,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-//        var game = new TextGameController();
-//        var sudoku = new Sudoku(9, 20);
-//        game.setGameModel(sudoku);
-//        game.run();
         launch(args);
     }
 

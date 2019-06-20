@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="java2.saxion.Controller">
    <children>
-      <GridPane fx:id="gridPane" gridLinesVisible="true" layoutX="27.0" layoutY="63.0" onKeyPressed="#removeBackgroundColor" prefHeight="260.0" prefWidth="447.0">
+      <GridPane fx:id="gridPane" gridLinesVisible="true" layoutX="27.0" layoutY="63.0" onMouseClicked="#removeBackgroundColor" prefHeight="260.0" prefWidth="447.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

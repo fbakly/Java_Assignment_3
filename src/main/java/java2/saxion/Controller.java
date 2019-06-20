@@ -12,9 +12,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 import javax.imageio.plugins.tiff.BaselineTIFFTagSet;
+import javax.imageio.plugins.tiff.TIFFDirectory;
 import java.net.URL;
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static javafx.application.Application.launch;
 
@@ -25,6 +29,9 @@ public class Controller implements Initializable {
     private TextField[][] textFields = new TextField[9][9];
     private String[][] solvedSudoku = new String[9][9];
     private boolean gotSolvedSudoku = false;
+    private boolean timerActive = false;
+    private Executor executor = Executors.newCachedThreadPool();
+    private Timer timer = new Timer();
 
     @FXML
     private Button clearButton;
@@ -44,6 +51,24 @@ public class Controller implements Initializable {
         difficultyChoiceBox.setValue("Medium");
         difficultyChoiceBox.setItems(difficulties);
         generatePuzzle();
+
+        timer.getExpiredProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.stopGame();
+            }
+        });
+    }
+
+    public void stopGame() {
+        check();
+        Arrays.stream(textFields).forEach(e -> {
+            Arrays.stream(e)
+                    .forEach(i -> {
+                        i.setEditable(false);
+                    });
+        });
+        disableButtons();
+        var popUp = new PopUp("You lost", "You ran out of time");
     }
 
     @FXML
@@ -66,9 +91,12 @@ public class Controller implements Initializable {
                 }
             }
         }
+
         if (correct == true) {
             var popUp = new PopUp("Congratulations", "You won");
+            disableButtons();
             popUp.creatPopUp();
+            timer.stopTimer();
         }
     }
 
@@ -115,6 +143,7 @@ public class Controller implements Initializable {
         var popUp = new PopUp("Solved", "Too hard for you");
         popUp.creatPopUp();
         disableButtons();
+        timer.stopTimer();
     }
 
     private void clearGridPane() {
@@ -174,6 +203,13 @@ public class Controller implements Initializable {
 
         clearGridPane();
         enableButtons();
+        if (timerActive) {
+            anchorPane.getChildren().remove(timer);
+            timer.stopTimer();
+        }
+
+        timer.startTimer(numOfRemovals * 20);
+        anchorPane.getChildren().add(timer);
 
         this.sudoku = new Sudoku(9, numOfRemovals);
 
@@ -199,6 +235,7 @@ public class Controller implements Initializable {
 
 
         gotSolvedSudoku = false;
+        timerActive = true;
     }
 
 
