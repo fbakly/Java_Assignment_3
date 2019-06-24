@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -10,7 +11,7 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.999-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="java2.saxion.Controller">
    <children>
-      <GridPane fx:id="gridPane" gridLinesVisible="true" layoutX="27.0" layoutY="63.0" onMouseClicked="#removeBackgroundColor" prefHeight="260.0" prefWidth="447.0">
+      <GridPane fx:id="gridPane" gridLinesVisible="true" layoutX="27.0" layoutY="63.0" prefHeight="260.0" prefWidth="447.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -34,11 +35,13 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Button fx:id="checkButton" layoutX="550.0" layoutY="196.0" mnemonicParsing="false" onAction="#check" text="Check" textAlignment="CENTER" />
-      <Button fx:id="generateButton" layoutX="539.0" layoutY="149.0" mnemonicParsing="false" onAction="#generatePuzzle" text="Generate" textAlignment="CENTER" />
+      <Button fx:id="checkButton" layoutX="577.0" layoutY="141.0" mnemonicParsing="false" onAction="#check" text="Check" textAlignment="CENTER" />
+      <Button fx:id="generateButton" layoutX="489.0" layoutY="141.0" mnemonicParsing="false" onAction="#generatePuzzle" text="Generate" textAlignment="CENTER" />
       <Text layoutX="549.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Difficulty" />
       <ChoiceBox fx:id="difficultyChoiceBox" layoutX="528.0" layoutY="82.0" prefHeight="26.0" prefWidth="100.0" />
-      <Button fx:id="solveButton" layoutX="552.0" layoutY="242.0" mnemonicParsing="false" onAction="#solve" text="Solve" />
-      <Button fx:id="clearButton" layoutX="553.0" layoutY="280.0" mnemonicParsing="false" onAction="#clearGrid" text="Clear" />
+      <Button fx:id="solveButton" layoutX="501.0" layoutY="180.0" mnemonicParsing="false" onAction="#solve" text="Solve" />
+      <Button fx:id="clearButton" layoutX="581.0" layoutY="180.0" mnemonicParsing="false" onAction="#clearGrid" text="Clear" />
+      <Button fx:id="hintButton" layoutX="546.0" layoutY="270.0" mnemonicParsing="false" onAction="#giveHint" text="Hint" />
+      <Label fx:id="availableHintsLabel" layoutX="524.0" layoutY="235.0" text="Hints  Left: " />
    </children>
 </AnchorPane>

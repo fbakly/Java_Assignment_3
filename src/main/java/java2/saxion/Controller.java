@@ -7,18 +7,18 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
-import javax.imageio.plugins.tiff.BaselineTIFFTagSet;
-import javax.imageio.plugins.tiff.TIFFDirectory;
 import java.net.URL;
-import java.sql.Time;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static javafx.application.Application.launch;
 
@@ -32,7 +32,11 @@ public class Controller implements Initializable {
     private boolean timerActive = false;
     private Executor executor = Executors.newCachedThreadPool();
     private Timer timer = new Timer();
+    private int numHintsGiven = 0;
+    private int maxNumHints;
 
+    @FXML
+    private Label availableHintsLabel;
     @FXML
     private Button clearButton;
     @FXML
@@ -45,6 +49,8 @@ public class Controller implements Initializable {
     private GridPane gridPane;
     @FXML
     private Button checkButton;
+    @FXML
+    private Button hintButton;
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,6 +65,30 @@ public class Controller implements Initializable {
         });
     }
 
+    public void giveHint() {
+        var cont = true;
+
+        if (numHintsGiven >= maxNumHints) {
+            var hintsExceeded = new PopUp("Hints Exceeded", "Maximum number of\nhints has been reached");
+            hintsExceeded.creatPopUp();
+        } else {
+            for (var row = 0; row < 9 && cont; row++) {
+                for (var column = 0; column < 9 && cont; column++) {
+                    if (textFields[row][column].getText().isEmpty()) {
+                        if (!gotSolvedSudoku)
+                            getSolvedSudoku();
+                        textFields[row][column].setText(solvedSudoku[row][column]);
+                        textFields[row][column].setStyle("-fx-background-color: Pink");
+                        textFields[row][column].setEditable(false);
+                        cont = false;
+                        numHintsGiven++;
+                    }
+                }
+            }
+            availableHintsLabel.setText("Hints Left: " + (maxNumHints - numHintsGiven));
+        }
+    }
+
     public void stopGame() {
         check();
         Arrays.stream(textFields).forEach(e -> {
@@ -71,40 +101,52 @@ public class Controller implements Initializable {
         var popUp = new PopUp("You lost", "You ran out of time");
     }
 
-    @FXML
-    public void check() {
-        var correct = true;
+    private AtomicBoolean isGridFull() {
+        var noBoxesEmpty = new AtomicBoolean(true);
 
         if (!gotSolvedSudoku)
             getSolvedSudoku();
 
-        for (var row = 0; row < 9; row++) {
-            for (var column = 0; column < 9; column++) {
-                if (!solvedSudoku[row][column].equals(textFields[row][column].getText())) {
-                    correct = false;
-                    textFields[row][column].setStyle("-fx-background-color: red");
-                } else {
-                    if (textFields[row][column].isEditable()) {
-                        textFields[row][column].setStyle("-fx-background-color: green");
-                        textFields[row][column].setEditable(false);
-                    }
-                }
-            }
-        }
-
-        if (correct == true) {
-            var popUp = new PopUp("Congratulations", "You won");
-            disableButtons();
-            popUp.creatPopUp();
-            timer.stopTimer();
-        }
+        Arrays.stream(textFields).forEach(fields -> {
+            Arrays.stream(fields)
+                    .forEach(field -> {
+                        if (field.getText().isEmpty())
+                            noBoxesEmpty.set(false);
+                    });
+        });
+        return noBoxesEmpty;
     }
 
     @FXML
-    public void removeBackgroundColor() {
-        gridPane.getChildren().stream().forEach(e -> {
-            e.setStyle("-fx-text-fill: Blue");
-        });
+    public void check() {
+        var correct = true;
+
+        if (isGridFull().get()) {
+
+            for (var row = 0; row < 9; row++) {
+                for (var column = 0; column < 9; column++) {
+                    if (!solvedSudoku[row][column].equals(textFields[row][column].getText())) {
+                        correct = false;
+                        textFields[row][column].setStyle("-fx-background-color: red");
+                    } else {
+                        if (textFields[row][column].isEditable()) {
+                            textFields[row][column].setStyle("-fx-background-color: green");
+                            textFields[row][column].setEditable(false);
+                        }
+                    }
+                }
+            }
+
+            if (correct == true) {
+                var popUp = new PopUp("Congratulations", "You won");
+                disableButtons();
+                popUp.creatPopUp();
+                timer.stopTimer();
+            }
+        } else {
+            var popUp = new PopUp("Please fill grid", "Complete the puzzle\nfirst");
+            popUp.creatPopUp();
+        }
     }
 
 
@@ -112,20 +154,21 @@ public class Controller implements Initializable {
         solveButton.setDisable(true);
         checkButton.setDisable(true);
         clearButton.setDisable(true);
+        hintButton.setDisable(true);
     }
 
     public void enableButtons() {
         solveButton.setDisable(false);
         checkButton.setDisable(false);
         clearButton.setDisable(false);
+        hintButton.setDisable(false);
     }
 
 
     public void solve() {
         if (!gotSolvedSudoku)
             getSolvedSudoku();
-        clearGridPane();
-
+        resetGrid();
         for (var row = 0; row < 9; row++) {
             for (var column = 0; column < 9; column++) {
                 var tempField = new TextField(solvedSudoku[row][column]);
@@ -133,7 +176,7 @@ public class Controller implements Initializable {
                 tempField.setAlignment(Pos.CENTER);
 
                 if (textFields[row][column].isEditable())
-                    tempField.setStyle("-fx-background-color: Green");
+                    tempField.setStyle("-fx-background-color: Orange");
 
                 gridPane.add(tempField, row, column);
                 textFields[row][column] = tempField;
@@ -146,7 +189,7 @@ public class Controller implements Initializable {
         timer.stopTimer();
     }
 
-    private void clearGridPane() {
+    private void resetGrid() {
         gridPane.getChildren().removeAll(gridPane.getChildren());
     }
 
@@ -196,23 +239,7 @@ public class Controller implements Initializable {
         });
     }
 
-    @FXML
-    public void generatePuzzle() {
-
-        var numOfRemovals = getNumOfRemovals();
-
-        clearGridPane();
-        enableButtons();
-        if (timerActive) {
-            anchorPane.getChildren().remove(timer);
-            timer.stopTimer();
-        }
-
-        timer.startTimer(numOfRemovals * 20);
-        anchorPane.getChildren().add(timer);
-
-        this.sudoku = new Sudoku(9, numOfRemovals);
-
+    private void fillGrid() {
         for (var row = 0; row < 9; row++) {
             for (var column = 0; column < 9; column++) {
                 if (sudoku.getValue(row, column) != 0) {
@@ -232,7 +259,30 @@ public class Controller implements Initializable {
                 }
             }
         }
+    }
 
+    @FXML
+    public void generatePuzzle() {
+
+        var numOfRemovals = getNumOfRemovals();
+
+        numHintsGiven = 0;
+        maxNumHints = numOfRemovals / 4;
+        availableHintsLabel.setText("Hints Left: " + maxNumHints);
+
+        resetGrid();
+        enableButtons();
+        if (timerActive) {
+            anchorPane.getChildren().remove(timer);
+            timer.stopTimer();
+        }
+
+        timer.startTimer(numOfRemovals * 20);
+        anchorPane.getChildren().add(timer);
+
+        this.sudoku = new Sudoku(9, numOfRemovals);
+
+        fillGrid();
 
         gotSolvedSudoku = false;
         timerActive = true;

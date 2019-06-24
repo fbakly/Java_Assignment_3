@@ -6,19 +6,13 @@ import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
-import java.sql.Time;
-import java.util.concurrent.Callable;
 
 public class Timer extends Pane {
     private Timeline animation;
@@ -59,7 +53,6 @@ public class Timer extends Pane {
         }
         var timeFormat = "Time Left: " + String.valueOf(tmp / 60) + ":" + String.valueOf((tmp % 60 > 9) ? tmp % 60 : "0" + (tmp % 60));
         label.setText(timeFormat);
-        //label.setStyle("-fx-text-fill: red");
         label.setTextFill(Paint.valueOf(String.valueOf(Color.valueOf(Color.color(Math.random(), Math.random(), Math.random()).toString()))));
     }
 
